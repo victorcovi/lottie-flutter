@@ -128,6 +128,25 @@ class LottieCache {
     assert(_cache.length <= maximumSize);
   }
 
+  /// Returns the cached or pending [LottieComposition] for the given key, or null if not
+  /// found.
+  Future<LottieComposition>? getIfContained(Object key) {
+    var pendingResult = _pending[key];
+    if (pendingResult != null) {
+      return pendingResult;
+    }
+    var result = _cache[key];
+    if (result != null) {
+      // Remove the provider from the list so that we can put it back in below
+      // and thus move it to the end of the list.
+      _cache.remove(key);
+      _add(key, result);
+      return SynchronousFuture<LottieComposition>(result);
+    }
+
+    return null;
+  }
+
   /// The number of entries in the cache.
   int get count => _cache.length;
 }

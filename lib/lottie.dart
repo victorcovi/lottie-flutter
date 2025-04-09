@@ -12,6 +12,8 @@ export 'src/providers/file_provider.dart' show FileLottie;
 export 'src/providers/load_image.dart' show LottieImageProviderFactory;
 export 'src/providers/lottie_provider.dart' show LottieCache, LottieProvider;
 export 'src/providers/memory_provider.dart' show MemoryLottie;
+export 'src/providers/disk_cached_network_provider.dart'
+    show DiskCachedNetworkLottie;
 export 'src/providers/network_provider.dart' show NetworkLottie;
 export 'src/raw_lottie.dart' show RawLottie;
 export 'src/render_cache.dart' show RenderCache;
