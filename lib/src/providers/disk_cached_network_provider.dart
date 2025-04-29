@@ -14,6 +14,7 @@ class DiskCachedNetworkLottie extends LottieProvider {
   DiskCachedNetworkLottie(
     this.url,
     this.bytes, {
+    this.lottieCache,
     super.imageProviderFactory,
     super.decoder,
     super.backgroundLoading,
@@ -21,14 +22,20 @@ class DiskCachedNetworkLottie extends LottieProvider {
 
   final String url;
   final Uint8List bytes;
+  final LottieCache? lottieCache;
 
-  static Future<LottieComposition>? retrieveLoadedComposition(String url) {
-    return sharedLottieCache.getIfContained(url.hashCode);
+  static Future<LottieComposition>? retrieveLoadedComposition(
+    String url, {
+    LottieCache? lottieCache,
+  }) {
+    final cache = lottieCache ?? sharedLottieCache;
+    return cache.getIfContained(url.hashCode);
   }
 
   @override
   Future<LottieComposition> load({BuildContext? context}) {
-    return sharedLottieCache.putIfAbsent(hashCode, () async {
+    final cache = lottieCache ?? sharedLottieCache;
+    return cache.putIfAbsent(hashCode, () async {
       var resolved = Uri.base.resolve(url);
 
       LottieComposition composition;
@@ -54,11 +61,8 @@ class DiskCachedNetworkLottie extends LottieProvider {
       LottieImageAsset lottieImage) {
     var imageProvider = getImageProvider(lottieImage);
 
-    if (imageProvider == null) {
-      var imageUrl = jsonUri
-          .resolve(p.url.join(lottieImage.dirName, lottieImage.fileName));
-      imageProvider = NetworkImage(imageUrl.toString());
-    }
+    imageProvider ??=
+        AssetImage(p.join(lottieImage.dirName, lottieImage.fileName));
 
     return loadImage(composition, lottieImage, imageProvider);
   }
