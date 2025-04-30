@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -57,12 +58,15 @@ class DiskCachedNetworkLottie extends LottieProvider {
     });
   }
 
-  Future<ui.Image?> _loadImage(Uri jsonUri, LottieComposition composition,
-      LottieImageAsset lottieImage) {
+  Future<ui.Image?> _loadImage(
+    Uri jsonUri,
+    LottieComposition composition,
+    LottieImageAsset lottieImage,
+  ) {
     var imageProvider = getImageProvider(lottieImage);
 
     imageProvider ??=
-        AssetImage(p.join(lottieImage.dirName, lottieImage.fileName));
+        FileImage(File(p.join(lottieImage.dirName, lottieImage.fileName)));
 
     return loadImage(composition, lottieImage, imageProvider);
   }
